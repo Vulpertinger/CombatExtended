@@ -45,20 +45,20 @@ public class StatWorker_Magazine : StatWorker
         var ammoProps = GunDef(req)?.GetCompProperties<CompProperties_AmmoUser>();
         stringBuilder.AppendLine("CE_MagazineSize".Translate() + ": " + GenText.ToStringByStyle(ammoProps.magazineSize, ToStringStyle.Integer));
         stringBuilder.AppendLine("CE_ReloadTime".Translate() + ": " + GenText.ToStringByStyle((ammoProps.reloadTime), ToStringStyle.FloatTwo) + " " + "LetterSecond".Translate());
+        stringBuilder.AppendLine("This weapon reloads " + (ammoProps.reloadOneAtATime ? "one round at a time." : "the entire magazine at once."));
         return stringBuilder.ToString().TrimEndNewlines();
     }
 
     public override string GetStatDrawEntryLabel(StatDef stat, float value, ToStringNumberSense numberSense, StatRequest optionalReq, bool finalized = true)
-    {
+    {        
+        var ammoProps = GunDef(optionalReq)?.GetCompProperties<CompProperties_AmmoUser>();
         if (!optionalReq.HasThing)
-        {
-            var ammoProps = GunDef(optionalReq)?.GetCompProperties<CompProperties_AmmoUser>();
-            return ammoProps.magazineSize.ToString() + " / " + GenText.ToStringByStyle((ammoProps.reloadTime), ToStringStyle.FloatTwo) + " " + "LetterSecond".Translate();
+        {  
+            return ammoProps.magazineSize.ToString() + " / " + GenText.ToStringByStyle((ammoProps.reloadTime), ToStringStyle.FloatTwo) + " " + "LetterSecond".Translate() + (ammoProps.reloadOneAtATime ? " per" : "");
         }
         else
-        {
-            var ammoProps = GunDef(optionalReq)?.GetCompProperties<CompProperties_AmmoUser>();
-            return GetMagSize(optionalReq).ToString() + " / " + GenText.ToStringByStyle((ammoProps.reloadTime), ToStringStyle.FloatTwo) + " " + "LetterSecond".Translate();
+        {            
+            return GetMagSize(optionalReq).ToString() + " / " + GenText.ToStringByStyle((ammoProps.reloadTime), ToStringStyle.FloatTwo) + " " + "LetterSecond".Translate() + (ammoProps.reloadOneAtATime ? " per" : "");
         }
     }
 
